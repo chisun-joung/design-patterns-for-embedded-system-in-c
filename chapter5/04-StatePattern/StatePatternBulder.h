@@ -2,11 +2,6 @@
 #define StatePatternBulder_H
 
 typedef struct StatePatternBulder StatePatternBulder;
-struct StatePatternBulder
-{
-
-};
-
-
+struct StatePatternBulder {};
 
 #endif

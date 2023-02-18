@@ -5,18 +5,17 @@
 #include <stdlib.h>
 
 typedef struct MicrowaveEmitter MicrowaveEmitter;
-struct MicrowaveEmitter
-{
-    int deviceState;
+struct MicrowaveEmitter {
+  int deviceState;
 };
 
-void MicrowaveEmitter_Init(MicrowaveEmitter* const me);
-void MicrowaveEmitter_Cleanup(MicrowaveEmitter* const me);
+void MicrowaveEmitter_Init(MicrowaveEmitter *const me);
+void MicrowaveEmitter_Cleanup(MicrowaveEmitter *const me);
 
-MicrowaveEmitter* MicrowaveEmitter_Create();
-void MicrowaveEmitter_Destroy(MicrowaveEmitter* const me);
+MicrowaveEmitter *MicrowaveEmitter_Create();
+void MicrowaveEmitter_Destroy(MicrowaveEmitter *const me);
 
-void MicrowaveEmitter_startEmitting(MicrowaveEmitter* const me);
-void MicrowaveEmitter_stopEmitting(MicrowaveEmitter* const me);
+void MicrowaveEmitter_startEmitting(MicrowaveEmitter *const me);
+void MicrowaveEmitter_stopEmitting(MicrowaveEmitter *const me);
 
 #endif

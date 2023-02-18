@@ -1,5 +1,3 @@
 #include "Velocity.h"
 
-void Velocity_Init(Velocity* const me){
-
-}
+void Velocity_Init(Velocity *const me) {}

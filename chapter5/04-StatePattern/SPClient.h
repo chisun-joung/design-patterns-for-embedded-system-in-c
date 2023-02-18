@@ -2,11 +2,6 @@
 #define SPClient_H
 
 typedef struct SPClient SPClient;
-struct SPClient
-{
-
-};
-
-
+struct SPClient {};
 
 #endif
