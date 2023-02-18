@@ -5,11 +5,12 @@
 #include "GasSensorThread.h"
 
 void controlLoop(void) {
-    while (TRUE) {
-        startEpochTimer();
-        GasSensorThread_run();
-        GasActuatorThread_run();
-        GasDisplayThread_run();
-        while(!epochTimerHasElapsed()) ;
-    };
+  while (TRUE) {
+    startEpochTimer();
+    GasSensorThread_run();
+    GasActuatorThread_run();
+    GasDisplayThread_run();
+    while (!epochTimerHasElapsed())
+      ;
+  };
 }

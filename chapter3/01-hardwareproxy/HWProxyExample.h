@@ -6,10 +6,6 @@ struct MotorData;
 struct MotorDisplay;
 struct MotorProxy;
 
-typedef enum DirectionType {
-    NO_DIRECTION,
-    FORWARD,
-    REVERSE
-} DirectionType;
+typedef enum DirectionType { NO_DIRECTION, FORWARD, REVERSE } DirectionType;
 
 #endif

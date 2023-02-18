@@ -1,87 +1,93 @@
 #include "EMGChannel.h"
 
-static void initRelations(EMGChannel* const me);
+static void initRelations(EMGChannel *const me);
 
-static void cleanUpRelations(EMGChannel* const me);
+static void cleanUpRelations(EMGChannel *const me);
 
-void EMGChannel_Init(EMGChannel* const me) {
-    initRelations(me);
+void EMGChannel_Init(EMGChannel *const me) { initRelations(me); }
+
+void EMGChannel_Cleanup(EMGChannel *const me) { cleanUpRelations(me); }
+
+void EMGChannel_acquireData(EMGChannel *const me) {
+  /* delegate to the appropriate part */
+  EMGSensorDeviceDriver_acquireData(&me->itsEMGSensorDeviceDriver);
 }
 
-void EMGChannel_Cleanup(EMGChannel* const me) {
-    cleanUpRelations(me);
+double EMGChannel_getFrequency(EMGChannel *const me) {
+  return me->itsMovingAverageFilter.computedFreq;
 }
 
-void EMGChannel_acquireData(EMGChannel* const me) {
-    /* delegate to the appropriate part */
-    EMGSensorDeviceDriver_acquireData(&me->itsEMGSensorDeviceDriver);
+long EMGChannel_getLightColor(EMGChannel *const me) {
+  return me->itsCalculateColor.red << 16 + me->itsCalculateColor.green
+                                   << 8 + me->itsCalculateColor.blue;
 }
 
-double EMGChannel_getFrequency(EMGChannel* const me) {
-    return me->itsMovingAverageFilter.computedFreq;
+int EMGChannel_getVoltage(EMGChannel *const me) {
+  return me->itsEMGSensorDeviceDriver.voltage;
 }
 
-long EMGChannel_getLightColor(EMGChannel* const me) {
-    return me->itsCalculateColor.red<<16 + me->itsCalculateColor.green<<8 + me->itsCalculateColor.blue;
+void EMGChannel_setSensitivity(EMGChannel *const me, int sen) {
+  EMGSensorDeviceDriver_setSensitivity(&me->itsEMGSensorDeviceDriver, sen);
 }
 
-int EMGChannel_getVoltage(EMGChannel* const me) {
-    return me->itsEMGSensorDeviceDriver.voltage;
+struct CalculateColor *
+EMGChannel_getItsCalculateColor(const EMGChannel *const me) {
+  return (struct CalculateColor *)&(me->itsCalculateColor);
 }
 
-void EMGChannel_setSensitivity(EMGChannel* const me, int sen) {
-    EMGSensorDeviceDriver_setSensitivity(&me->itsEMGSensorDeviceDriver, sen);
+struct ConvertToFrequency *
+EMGChannel_getItsConvertToFrequency(const EMGChannel *const me) {
+  return (struct ConvertToFrequency *)&(me->itsConvertToFrequency);
 }
 
-struct CalculateColor* EMGChannel_getItsCalculateColor(const EMGChannel* const me) {
-    return (struct CalculateColor*)&(me->itsCalculateColor);
+struct EMGSensorDeviceDriver *
+EMGChannel_getItsEMGSensorDeviceDriver(const EMGChannel *const me) {
+  return (struct EMGSensorDeviceDriver *)&(me->itsEMGSensorDeviceDriver);
 }
 
-struct ConvertToFrequency* EMGChannel_getItsConvertToFrequency(const EMGChannel* const me) {
-    return (struct ConvertToFrequency*)&(me->itsConvertToFrequency);
+struct LightDeviceDriver *
+EMGChannel_getItsLightDeviceDriver(const EMGChannel *const me) {
+  return (struct LightDeviceDriver *)&(me->itsLightDeviceDriver);
 }
 
-struct EMGSensorDeviceDriver* EMGChannel_getItsEMGSensorDeviceDriver(const EMGChannel* const me) {
-    return (struct EMGSensorDeviceDriver*)&(me->itsEMGSensorDeviceDriver);
+struct MovingAverageFilter *
+EMGChannel_getItsMovingAverageFilter(const EMGChannel *const me) {
+  return (struct MovingAverageFilter *)&(me->itsMovingAverageFilter);
 }
 
-struct LightDeviceDriver* EMGChannel_getItsLightDeviceDriver(const EMGChannel* const me) {
-    return (struct LightDeviceDriver*)&(me->itsLightDeviceDriver);
+EMGChannel *EMGChannel_Create(void) {
+  EMGChannel *me = (EMGChannel *)malloc(sizeof(EMGChannel));
+  if (me != NULL)
+    EMGChannel_Init(me);
+  return me;
 }
 
-struct MovingAverageFilter* EMGChannel_getItsMovingAverageFilter(const EMGChannel* const me) {
-    return (struct MovingAverageFilter*)&(me->itsMovingAverageFilter);
+void EMGChannel_Destroy(EMGChannel *const me) {
+  if (me != NULL)
+    EMGChannel_Cleanup(me);
+  free(me);
 }
 
-EMGChannel * EMGChannel_Create(void) {
-    EMGChannel* me = (EMGChannel *) malloc(sizeof(EMGChannel));
-    if(me!=NULL)
-        EMGChannel_Init(me);
-    return me;
+static void initRelations(EMGChannel *const me) {
+  CalculateColor_Init(&(me->itsCalculateColor));
+  ConvertToFrequency_Init(&(me->itsConvertToFrequency));
+  EMGSensorDeviceDriver_Init(&(me->itsEMGSensorDeviceDriver));
+  LightDeviceDriver_Init(&(me->itsLightDeviceDriver));
+  MovingAverageFilter_Init(&(me->itsMovingAverageFilter));
+  EMGSensorDeviceDriver_setItsConvertToFrequency(
+      &(me->itsEMGSensorDeviceDriver), &(me->itsConvertToFrequency));
+  ConvertToFrequency_setItsMovingAverageFilter(&(me->itsConvertToFrequency),
+                                               &(me->itsMovingAverageFilter));
+  MovingAverageFilter_setItsCalculateColor(&(me->itsMovingAverageFilter),
+                                           &(me->itsCalculateColor));
+  CalculateColor_setItsLightDeviceDriver(&(me->itsCalculateColor),
+                                         &(me->itsLightDeviceDriver));
 }
 
-void EMGChannel_Destroy(EMGChannel* const me) {
-    if(me!=NULL)
-        EMGChannel_Cleanup(me);
-    free(me);
-}
-
-static void initRelations(EMGChannel* const me) {
-    CalculateColor_Init(&(me->itsCalculateColor));
-    ConvertToFrequency_Init(&(me->itsConvertToFrequency));
-    EMGSensorDeviceDriver_Init(&(me->itsEMGSensorDeviceDriver));
-    LightDeviceDriver_Init(&(me->itsLightDeviceDriver));
-    MovingAverageFilter_Init(&(me->itsMovingAverageFilter));
-    EMGSensorDeviceDriver_setItsConvertToFrequency(&(me->itsEMGSensorDeviceDriver), &(me->itsConvertToFrequency));
-    ConvertToFrequency_setItsMovingAverageFilter(&(me->itsConvertToFrequency), &(me->itsMovingAverageFilter));
-    MovingAverageFilter_setItsCalculateColor(&(me->itsMovingAverageFilter), &(me->itsCalculateColor));
-    CalculateColor_setItsLightDeviceDriver(&(me->itsCalculateColor), &(me->itsLightDeviceDriver));
-}
-
-static void cleanUpRelations(EMGChannel* const me) {
-    MovingAverageFilter_Cleanup(&(me->itsMovingAverageFilter));
-    LightDeviceDriver_Cleanup(&(me->itsLightDeviceDriver));
-    EMGSensorDeviceDriver_Cleanup(&(me->itsEMGSensorDeviceDriver));
-    ConvertToFrequency_Cleanup(&(me->itsConvertToFrequency));
-    CalculateColor_Cleanup(&(me->itsCalculateColor));
+static void cleanUpRelations(EMGChannel *const me) {
+  MovingAverageFilter_Cleanup(&(me->itsMovingAverageFilter));
+  LightDeviceDriver_Cleanup(&(me->itsLightDeviceDriver));
+  EMGSensorDeviceDriver_Cleanup(&(me->itsEMGSensorDeviceDriver));
+  ConvertToFrequency_Cleanup(&(me->itsConvertToFrequency));
+  CalculateColor_Cleanup(&(me->itsCalculateColor));
 }

@@ -19,4 +19,4 @@ struct WaveformDisplay;
 typedef unsigned char boolean;
 #define QUEUE_SIZE (20000)
 
-#endif //ECGPkg_H
+#endif // ECGPkg_H

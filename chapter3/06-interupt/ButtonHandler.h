@@ -13,7 +13,7 @@ void deinstall(void);
 interrupt void handleButtonPushInterrupt(void);
 interrupt void handleButtonReleaseInterrupt(void);
 
-struct LED* ButtonHandler_getItsLED(void);
-void ButtonHandler_setItsLED(struct LED* p_LED);
+struct LED *ButtonHandler_getItsLED(void);
+void ButtonHandler_setItsLED(struct LED *p_LED);
 
 #endif

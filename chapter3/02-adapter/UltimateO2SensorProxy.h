@@ -2,10 +2,9 @@
 #define UltimateO2SensorProxy_H
 
 typedef struct UltimateO2SensorProxy UltimateO2SensorProxy;
-struct UltimateO2SensorProxy
-{
-    unsigned int (*accessO2Conc)(void);
-    unsigned long (*accessGasFlow)(void);
+struct UltimateO2SensorProxy {
+  unsigned int (*accessO2Conc)(void);
+  unsigned long (*accessGasFlow)(void);
 };
 
 unsigned int accessO2Conc();

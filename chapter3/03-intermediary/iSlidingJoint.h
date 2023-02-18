@@ -2,10 +2,9 @@
 #define ISlidingJoint_H
 
 typedef struct iSlidingJoint iSlidingJoint;
-struct iSlidingJoint
-{
-    int (*getLength)();
-    void (*setLength)(int x);
-    int (*zero)();
+struct iSlidingJoint {
+  int (*getLength)();
+  void (*setLength)(int x);
+  int (*zero)();
 };
 #endif
